@@ -1,0 +1,30 @@
+# Dataset folders
+data/
+dataset/
+datasets/
+*.csv
+*.json
+*.xml
+
+# Results and outputs
+results/
+output/
+outputs/
+logs/
+*.log
+
+# Model weights and checkpoints
+weights/
+checkpoints/
+*.pt
+*.pth
+*.h5
+*.ckpt
+*.pb
+*.onnx
+*.model
+
+# Additional common exclusions for data science
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
