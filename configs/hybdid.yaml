@@ -1,0 +1,19 @@
+# Hybrid Grid Search Configuration (hybrid_grid_config.yaml)
+run_mode: sweep
+model_type: HybridRecommender
+project_name: recommender-evaluation
+experiment_name: hybrid_grid_search
+
+# Grid search parameters
+alpha_weight:
+  values: [0.3, 0.5, 0.7]
+factors:
+  values: [16, 32, 64]
+regularization:
+  values: [0.01, 0.3, 0.7]
+alpha:
+  values: [16, 32, 64]
+iterations:
+  values: [8, 16, 32]
+
+description: "Grid search for hybrid recommender parameters"

@@ -1,0 +1,17 @@
+# ALS Grid Search Configuration (als_grid_config.yaml)
+run_mode: sweep
+model_type: ALSRecommender
+project_name: recommender-evaluation
+experiment_name: als_grid_search
+
+# Grid search parameters
+factors:
+  values: [16, 32, 64, 128]
+regularization:
+  values: [0.01, 0.3, 0.7]
+alpha:
+  values: [16, 32, 64]
+iterations:
+  values: [8, 16, 32]
+
+description: "Grid search for ALS recommender parameters"

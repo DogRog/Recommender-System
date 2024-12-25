@@ -1,0 +1,20 @@
+wandb_version: 1
+
+als_alpha:
+  value: 0.1
+als_n_factors:
+  value: 50
+als_regularization:
+  value: 0.01
+hybrid_als_alpha:
+  value: 0.1
+hybrid_als_n_factors:
+  value: 50
+hybrid_als_regularization:
+  value: 0.01
+hybrid_weight_alpha:
+  value: 0
+model_type:
+  value: content_based
+svd_n_factors:
+  value: 50

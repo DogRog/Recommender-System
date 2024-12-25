@@ -1,0 +1,12 @@
+wandb_version: 1
+
+alpha:
+  value: 40
+factors:
+  value: 100
+iterations:
+  value: 15
+model_type:
+  value: NumericalCBF
+regularization:
+  value: 0.01

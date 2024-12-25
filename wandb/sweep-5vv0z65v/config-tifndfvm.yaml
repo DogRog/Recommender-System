@@ -1,0 +1,10 @@
+wandb_version: 1
+
+alpha:
+  value: 16
+factors:
+  value: 128
+iterations:
+  value: 16
+regularization:
+  value: 0.7

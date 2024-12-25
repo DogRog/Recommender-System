@@ -1,0 +1,12 @@
+wandb_version: 1
+
+alpha:
+  value: 16
+alpha_weight:
+  value: 0.5
+factors:
+  value: 32
+iterations:
+  value: 32
+regularization:
+  value: 0.3

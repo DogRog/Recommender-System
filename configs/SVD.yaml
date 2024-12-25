@@ -1,0 +1,11 @@
+# SVD Grid Search Configuration (svd_grid_config.yaml)
+run_mode: sweep
+model_type: SVDRecommender
+project_name: recommender-evaluation
+experiment_name: svd_grid_search
+
+# Grid search parameters
+factors:
+  values: [16, 32, 64, 128]
+
+description: "Grid search for SVD recommender parameters"

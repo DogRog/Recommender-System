@@ -9,7 +9,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 class NumericalCBF:
-    def __init__(self, device=None, batch_size=1024, output_dir='recommendations'):
+    def __init__(self, device='mps', batch_size=256, output_dir='recommendations'):
         self.device = self._get_device(device)
         self.batch_size = batch_size
         self.output_dir = output_dir
