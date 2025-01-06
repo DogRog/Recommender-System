@@ -1,22 +1,21 @@
 # Dataset folders
-data/
-dataset/
-datasets/
+Data/
 *.csv
 *.json
 *.xml
 
 # Results and outputs
-results/
+Results/
 output/
 outputs/
 logs/
 *.log
 
 # Model weights and checkpoints
-weights/
+Weights/
 checkpoints/
-*.pt
+wandb/
+*.pkl
 *.pth
 *.h5
 *.ckpt

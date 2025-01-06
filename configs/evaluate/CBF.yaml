@@ -1,0 +1,11 @@
+# SVD Grid Search Configuration (svd_grid_config.yaml)
+run_mode: sweep
+model_type: CBF
+project_name: recommender-evaluation
+experiment_name: cbf_grid_search
+
+# Grid search parameters
+max_text_features:
+  values: [128, 256, 512, 1024]
+
+description: "Grid search for CBF recommender parameters"

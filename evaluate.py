@@ -20,7 +20,7 @@ from sklearn.preprocessing import StandardScaler
 from abc import ABC, abstractmethod
 
 from Models.collaborative_filtering import ALSRecommender, SVDRecommender
-from Models.numerical_CBF import NumericalCBF
+from Models.content_based_filtering import ContentBasedFiltering, NumericalCBF
 from Models.hybrid import HybridRecommender
 
 
@@ -134,24 +134,7 @@ class MetricCalculator:
                           item_features: Dict[str, np.ndarray],
                           use_batched: bool = False,
                           batch_size: int = 1000) -> float:
-        """Calculate recommendation diversity using item features - optimized version
-        
-        Parameters:
-        -----------
-        all_candidates : List[List[str]]
-            List of recommendation lists, each containing item IDs
-        item_features : Dict[str, np.ndarray]
-            Dictionary mapping item IDs to their feature vectors
-        use_batched : bool, optional (default=False)
-            Whether to use batched processing for large datasets
-        batch_size : int, optional (default=1000)
-            Size of batches when use_batched=True
-            
-        Returns:
-        --------
-        float
-            Mean diversity score across all recommendation lists
-        """
+        """Calculate recommendation diversity using item features"""
         if not item_features:
             return 0.0
             
@@ -322,6 +305,8 @@ class ModelFactory:
             return SVDRecommender(factors=config['factors'])
         elif model_type == 'NumericalCBF':
             return NumericalCBF()
+        elif model_type == 'CBF':
+            return ContentBasedFiltering(max_text_features=config['max_text_features'])
         elif model_type == 'HybridRecommender':
             return HybridRecommender(
                 alpha=config['alpha_weight'],
@@ -371,23 +356,7 @@ class ResultsManager:
                     results: Dict[str, float], 
                     model_config: Dict[str, Any], 
                     timestamp: Optional[str] = None) -> str:
-        """
-        Save evaluation results and model configuration to a JSON file
-        
-        Parameters:
-        -----------
-        results : Dict[str, float]
-            Dictionary containing evaluation metrics
-        model_config : Dict[str, Any]
-            Dictionary containing model configuration
-        timestamp : Optional[str]
-            Custom timestamp for the filename, defaults to current time
-            
-        Returns:
-        --------
-        str
-            Path to the saved results file
-        """
+        """Save evaluation results and model configuration to a JSON file"""
         if timestamp is None:
             timestamp = time.strftime("%Y%m%d_%H%M%S")
             
@@ -613,5 +582,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
-    

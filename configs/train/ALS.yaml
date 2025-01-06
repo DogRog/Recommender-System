@@ -1,0 +1,5 @@
+model_type: "ALSRecommender"
+factors: 16
+regularization: 0.3
+alpha: 16
+iterations: 16

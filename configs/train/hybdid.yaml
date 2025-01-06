@@ -1,0 +1,6 @@
+model_type: "HybridRecommender"
+factors: 16
+regularization: 0.7
+alpha: 16
+iterations: 15
+alpha_weight: 0.7

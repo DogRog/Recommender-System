@@ -1,0 +1,6 @@
+# Numerical CBF Configuration (cbf_config.yaml)
+run_mode: single
+model_type: NumericalCBF
+project_name: NumericalCBF
+experiment_name: cbf_experiment
+description: "Content-based filtering evaluation"

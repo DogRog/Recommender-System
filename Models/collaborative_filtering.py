@@ -161,26 +161,11 @@ class ALSRecommender:
         ]
     
     def save(self, path):
-        """
-        Save model to disk.
-        
-        Args:
-            path: Path where the model should be saved
-        """
         with open(path, 'wb') as f:
             pickle.dump(self, f)
             
     @classmethod
     def load(cls, path):
-        """
-        Load model from disk.
-        
-        Args:
-            path: Path to the saved model file
-            
-        Returns:
-            ALSRecommender: Loaded model instance
-        """
         with open(path, 'rb') as f:
             return pickle.load(f)
         

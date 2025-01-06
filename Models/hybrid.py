@@ -2,7 +2,7 @@ import numpy as np
 from scipy.sparse import coo_matrix
 import torch
 import pickle
-from Models.numerical_CBF import NumericalCBF
+from Models.content_based_filtering import NumericalCBF
 from Models.collaborative_filtering import ALSRecommender
 
 class HybridRecommender:
@@ -89,7 +89,7 @@ class HybridRecommender:
         # Normalize ALS scores
         als_scores = np.array([score for _, score in als_recs])
         als_scores = (als_scores - als_scores.min()) / (als_scores.max() - als_scores.min())
-        
+
         # Add weighted ALS scores
         for (article_id, _), norm_score in zip(als_recs, als_scores):
             article_scores[article_id] = self.alpha * norm_score
@@ -115,12 +115,12 @@ class HybridRecommender:
         return sorted_recs
         
     def save(self, path):
-        """Save hybrid model to disk."""
         with open(path, 'wb') as f:
             pickle.dump(self, f)
             
     @classmethod
     def load(cls, path):
-        """Load hybrid model from disk."""
         with open(path, 'rb') as f:
             return pickle.load(f)
+
+

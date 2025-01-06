@@ -32,7 +32,7 @@ def visualize_candidates(
     Visualize candidate items for the user.
     '''
     num_candidates = len(candidates)
-    col = 10
+    col = 2
     rows = (num_candidates // col) + 1
     fig, axs = plt.subplots(rows, col, figsize=(col * 2, rows * 2))
     for i, ax in enumerate(axs.flatten()):
