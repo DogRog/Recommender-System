@@ -11,6 +11,8 @@ import warnings
 warnings.filterwarnings('ignore')
 
 class ContentBasedFiltering:
+    '''Content-based filtering model for generating recommendations based on user purchase history and article features.'''
+    
     def __init__(self, device='mps', batch_size=256, output_dir='recommendations', max_text_features=1000):
         self.device = self._get_device(device)
         self.batch_size = batch_size
@@ -38,11 +40,11 @@ class ContentBasedFiltering:
         return torch.device(device)
         
     def _get_timestamp(self):
-        """Get formatted timestamp for filenames"""
+        '''Get formatted timestamp for filenames'''
         return datetime.now().strftime('%Y%m%d_%H%M%S')
 
     def _process_text_features(self, articles_df):
-        """Process the detail_desc column into TF-IDF features"""
+        '''Process the detail_desc column into TF-IDF features'''
         print("Processing text features from detail_desc...")
         
         # Handle missing values and convert to strings
@@ -54,7 +56,7 @@ class ContentBasedFiltering:
         return text_features.toarray()
         
     def fit(self, transactions_df, customers_df, articles_df):
-        """Optimized fit method with numpy arrays for fast lookup and text features"""
+        '''Fit method optimized with numpy arrays for fast lookup'''
         print("Fitting the model...")
 
         # Store article IDs as numpy array for fast lookup
@@ -110,7 +112,7 @@ class ContentBasedFiltering:
         return self
 
     def batch_recommend_items(self, user_ids, n_items=10, filter_already_purchased=True, chunk_size=1000):
-        """Generate recommendations in batches and save to CSV"""
+        '''Generate recommendations in batches and save to CSV'''
         print(f"\nGenerating recommendations for {len(user_ids)} users...")
         
         # Create timestamp for this batch of recommendations
@@ -187,7 +189,7 @@ class ContentBasedFiltering:
         return output_file
     
     def recommend_items(self, user_id, n_items=10, filter_already_purchased=True):
-        """Single user recommendations"""
+        '''Single user recommendations'''
         # Get user profile
         history = self.user_histories.get(user_id, set())
         if not history:
@@ -231,6 +233,8 @@ class ContentBasedFiltering:
              
 
 class NumericalCBF:
+    '''Content-based filtering model without text features.'''
+    
     def __init__(self, device='mps', batch_size=256, output_dir='recommendations'):
         self.device = self._get_device(device)
         self.batch_size = batch_size
@@ -252,11 +256,10 @@ class NumericalCBF:
         return torch.device(device)
         
     def _get_timestamp(self):
-        """Get formatted timestamp for filenames"""
         return datetime.now().strftime('%Y%m%d_%H%M%S')
         
     def fit(self, transactions_df, customers_df, articles_df):
-        """Optimized fit method with numpy arrays for fast lookup"""
+        '''Fit method optimized with numpy arrays for fast lookup'''
         print("Fitting the model...")
 
         # Store article IDs as numpy array for fast lookup
@@ -306,7 +309,7 @@ class NumericalCBF:
         return self
         
     def batch_recommend_items(self, user_ids, n_items=10, filter_already_purchased=True, chunk_size=1000):
-        """Generate recommendations in batches and save to CSV"""
+        '''Generate recommendations in batches and save to CSV'''
         print(f"\nGenerating recommendations for {len(user_ids)} users...")
         
         # Create timestamp for this batch of recommendations
@@ -383,7 +386,7 @@ class NumericalCBF:
         return output_file
     
     def recommend_items(self, user_id, n_items=10, filter_already_purchased=True):
-        """Single user recommendations"""
+        '''Single user recommendations'''
         # Get user profile
         history = self.user_histories.get(user_id, set())
         if not history:

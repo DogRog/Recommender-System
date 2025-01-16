@@ -4,7 +4,6 @@ import json
 import argparse
 import yaml
 import pandas as pd
-from typing import Dict, Any
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
@@ -15,7 +14,7 @@ from Models.hybrid import HybridRecommender
 
 @dataclass
 class DataPaths:
-    """Data paths configuration"""
+    '''Data paths configuration'''
     data_dir: str = "Data"
     customers_path: str = "customers.pkl"
     articles_path: str = "articles.pkl"
@@ -32,7 +31,7 @@ class DataPaths:
 
 
 class DataLoader:
-    """Handles loading and preprocessing of data"""
+    '''Handles loading and preprocessing of data'''
     
     def __init__(self, data_paths: DataPaths):
         self.data_paths = data_paths
@@ -60,10 +59,10 @@ class DataLoader:
 
 
 class ModelFactory:
-    """Factory for creating recommender models"""
+    '''Creates recommender models based on configuration'''
     
     @staticmethod
-    def create_model(config: Dict[str, Any]) -> 'BaseRecommender':
+    def create_model(config):
         """Create and return a recommender model based on configuration"""
         model_type = config['model_type']
         
@@ -95,7 +94,7 @@ class ModelFactory:
 
 
 class ModelTrainer:
-    """Handles model training and saving"""
+    '''Handles model training and saving'''
     
     def __init__(self, data_loader: DataLoader, model_factory: ModelFactory, save_dir: str = "Models"):
         self.data_loader = data_loader
@@ -103,8 +102,8 @@ class ModelTrainer:
         self.save_dir = save_dir
         os.makedirs(save_dir, exist_ok=True)
 
-    def train_model(self, config: Dict[str, Any]) -> None:
-        """Train model with given configuration"""
+    def train_model(self, config):
+        '''Train model with given configuration'''
         try:
             # Load data
             print("Loading data...")
@@ -140,7 +139,6 @@ class ModelTrainer:
 
 
 def main():
-    """Main function to run model training"""
     parser = argparse.ArgumentParser(description='Train recommender model')
     parser.add_argument('--config', type=str, required=True, 
                        help='Path to configuration file')

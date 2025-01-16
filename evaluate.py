@@ -1,13 +1,12 @@
-"""
+'''
 Recommender System Evaluation Module
 
 This module provides functionality for evaluating various recommender system models
 using metrics such as Recall@K, catalog coverage, and recommendation diversity.
-"""
+'''
 
 import os
 import time
-from typing import Dict, List, Optional, Set, Tuple, Union, Any
 import json
 import argparse
 import yaml
@@ -26,18 +25,18 @@ from Models.hybrid import HybridRecommender
 
 @dataclass
 class DataPaths:
-    """Data paths configuration"""
+    '''Data paths configuration'''
     data_dir: str = "Data"
     customers_path: str = "customers.pkl"
     articles_path: str = "articles.pkl"
     transactions_path: str = "transactions.pkl"
 
     def get_full_path(self, filename: str) -> str:
-        """Get full path for a given filename"""
+        '''Get full path for a given filename'''
         return os.path.join(self.data_dir, filename)
 
     def verify_paths(self) -> None:
-        """Verify all data files exist"""
+        '''Verify all data files exist'''
         for path in [self.customers_path, self.articles_path, self.transactions_path]:
             full_path = self.get_full_path(path)
             if not os.path.exists(full_path):
@@ -45,7 +44,7 @@ class DataPaths:
 
 
 class DataLoader:
-    """Handles loading and verification of data"""
+    '''Handles loading and verification of data'''
     
     REQUIRED_COLUMNS = {
         'customers': ['customer_id'],
@@ -56,8 +55,8 @@ class DataLoader:
     def __init__(self, data_paths: DataPaths):
         self.data_paths = data_paths
 
-    def load_data(self) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-        """Load and verify all data files"""
+    def load_data(self):
+        '''Load and verify all data files'''
         try:
             self.data_paths.verify_paths()
             
@@ -74,18 +73,16 @@ class DataLoader:
             print(f"Error loading data: {str(e)}")
             raise
 
-    def _print_data_info(self, customers: pd.DataFrame, articles: pd.DataFrame, 
-                        transactions: pd.DataFrame) -> None:
-        """Print information about loaded dataframes"""
+    def _print_data_info(self, customers, articles, transactions):
+        '''Print information about loaded dataframes'''
         print("\nData Overview:")
         for name, df in [("Customers", customers), ("Articles", articles), 
                         ("Transactions", transactions)]:
             print(f"\n{name} DataFrame:")
             print(df.info())
 
-    def _verify_columns(self, customers: pd.DataFrame, articles: pd.DataFrame, 
-                       transactions: pd.DataFrame) -> None:
-        """Verify required columns exist in dataframes"""
+    def _verify_columns(self, customers, articles, transactions):
+        '''Verify required columns exist in dataframes'''
         dfs = {'customers': customers, 'articles': articles, 'transactions': transactions}
         
         for df_name, cols in self.REQUIRED_COLUMNS.items():
@@ -96,12 +93,11 @@ class DataLoader:
 
 
 class MetricCalculator:
-    """Calculates various recommendation metrics"""
+    '''Calculates various recommendation metrics'''
     
     @staticmethod
-    def calculate_metric_at_k(actual: Dict[str, List[str]], predicted: List[List[str]], 
-                            k: int, metric_type: str = 'precision') -> float:
-        """Calculate Mean Precision@K or Mean Recall@K"""
+    def calculate_metric_at_k(actual, predicted, k, metric_type):
+        '''Calculate Mean Precision@K or Mean Recall@K'''
         if metric_type not in ['precision', 'recall']:
             raise ValueError("metric_type must be 'precision' or 'recall'")
             
@@ -123,18 +119,12 @@ class MetricCalculator:
         return np.mean(metrics) if metrics else 0.0
 
     @staticmethod
-    def calculate_coverage(all_candidates: List[List[str]], 
-                         catalog_items: Set[str]) -> float:
-        """Calculate catalog coverage of recommendations"""
+    def calculate_coverage(all_candidates, catalog_items):
         predicted_items = set().union(*map(set, all_candidates))
         return len(predicted_items) / len(catalog_items)
 
     @staticmethod
-    def calculate_diversity(all_candidates: List[List[str]], 
-                          item_features: Dict[str, np.ndarray],
-                          use_batched: bool = False,
-                          batch_size: int = 1000) -> float:
-        """Calculate recommendation diversity using item features"""
+    def calculate_diversity(all_candidates, item_features, use_batched = False, batch_size = 1000):
         if not item_features:
             return 0.0
             
@@ -146,11 +136,10 @@ class MetricCalculator:
                 all_candidates, item_features)
     
     @staticmethod
-    def _calculate_diversity_vectorized(all_candidates: List[List[str]], 
-                                      item_features: Dict[str, np.ndarray]) -> float:
-        """Vectorized diversity calculation without batching"""
+    def _calculate_diversity_vectorized(all_candidates, item_features):
+        '''Vectorized diversity calculation without batching'''
         
-        def calculate_list_diversity(candidates: List[str]) -> float:
+        def calculate_list_diversity(candidates):
             # Filter valid items and get their feature vectors
             valid_items = [item for item in candidates if item in item_features]
             if len(valid_items) < 2:
@@ -182,10 +171,8 @@ class MetricCalculator:
         return np.mean(diversities) if diversities else 0.0
 
     @staticmethod
-    def _calculate_diversity_batched(all_candidates: List[List[str]], 
-                                   item_features: Dict[str, np.ndarray],
-                                   batch_size: int) -> float:
-        """Batched diversity calculation for large datasets"""
+    def _calculate_diversity_batched(all_candidates, item_features, batch_size):
+        '''Batched diversity calculation for large datasets'''
         total_diversity = 0.0
         total_batches = 0
         
@@ -223,15 +210,13 @@ class MetricCalculator:
 
 
 class RecommenderEvaluator:
-    """Evaluates recommender system models"""
+    '''Evaluates recommender system models'''
 
     def __init__(self, metric_calculator: MetricCalculator):
         self.metric_calculator = metric_calculator
 
-    def evaluate_model(self, model: 'BaseRecommender', 
-                      users: List[str], items: Dict[str, str], purchases: Dict[str, List[str]], 
-                      k: int = 100, item_features: Optional[Dict[str, np.ndarray]] = None) -> Dict[str, float]:
-        """Evaluate a recommendation model using multiple metrics"""
+    def evaluate_model(self, model, users, items, purchases, k = 100, item_features = None):
+        '''Evaluate a recommendation model using multiple metrics'''
         start_time = time.time()
         
         print("Evaluating model recommendations...")
@@ -264,8 +249,7 @@ class RecommenderEvaluator:
         self._print_metrics(metrics)
         return metrics
 
-    def _print_metrics(self, metrics: Dict[str, float]) -> None:
-        """Print evaluation metrics"""
+    def _print_metrics(self, metrics):
         print(f"Evaluated model in {metrics['Elapsed Time']:.2f} seconds")
         for metric, value in metrics.items():
             if metric != 'Elapsed Time':
@@ -273,25 +257,25 @@ class RecommenderEvaluator:
 
 
 class BaseRecommender(ABC):
-    """Abstract base class for recommender models"""
+    '''Abstract base class for recommender models'''
     
     @abstractmethod
-    def fit(self, train_data: pd.DataFrame, customers: pd.DataFrame, articles: pd.DataFrame) -> None:
-        """Train the recommender model"""
+    def fit(self, train_data, customers, articles):
+        '''Train the recommender model'''
         pass
 
     @abstractmethod
-    def recommend_items(self, user_id: str, n_items: int = 100) -> List[Tuple[str, float]]:
-        """Generate recommendations for a user"""
+    def recommend_items(self, user_id, n_items = 100):
+        '''Generate recommendations for a user'''
         pass
 
 
 class ModelFactory:
-    """Factory for creating recommender models"""
+    '''Factory for creating recommender models'''
     
     @staticmethod
-    def create_model(config: Dict) -> 'BaseRecommender':
-        """Create and return a recommender model based on configuration"""
+    def create_model(config):
+        '''Create and return a recommender model based on configuration'''
         model_type = config['model_type']
         
         if model_type == 'ALSRecommender':
@@ -322,7 +306,7 @@ class ModelFactory:
 
 
 class FeatureProcessor:
-    """Processes and creates item features"""
+    '''Processes and creates item features'''
     
     DEFAULT_FEATURE_COLUMNS = [
         'product_type_no',
@@ -334,9 +318,8 @@ class FeatureProcessor:
     ]
 
     @staticmethod
-    def create_item_features(articles_df: pd.DataFrame, 
-                           feature_columns: Optional[List[str]] = None) -> Dict[str, np.ndarray]:
-        """Create normalized item features dictionary"""
+    def create_item_features(articles_df, feature_columns = None):
+        '''Create normalized item features dictionary'''
         feature_columns = feature_columns or FeatureProcessor.DEFAULT_FEATURE_COLUMNS
         
         scaler = StandardScaler()
@@ -346,17 +329,14 @@ class FeatureProcessor:
 
 
 class ResultsManager:
-    """Handles saving and loading of evaluation results"""
+    '''Handles saving and loading of evaluation results'''
     
     def __init__(self, results_dir: str = "Results"):
         self.results_dir = results_dir
         os.makedirs(results_dir, exist_ok=True)
         
-    def save_results(self, 
-                    results: Dict[str, float], 
-                    model_config: Dict[str, Any], 
-                    timestamp: Optional[str] = None) -> str:
-        """Save evaluation results and model configuration to a JSON file"""
+    def save_results(self, results, model_config, timestamp = None):
+        '''Save evaluation results and model configuration to a JSON file'''
         if timestamp is None:
             timestamp = time.strftime("%Y%m%d_%H%M%S")
             
@@ -380,13 +360,13 @@ class ResultsManager:
         print(f"\nResults saved to: {filepath}")
         return filepath
         
-    def load_results(self, filepath: str) -> Dict[str, Any]:
-        """Load results from a JSON file"""
+    def load_results(self, filepath):
+        '''Load results from a JSON file'''
         with open(filepath, 'r') as f:
             return json.load(f)
             
-    def get_results_summary(self) -> pd.DataFrame:
-        """Create a summary DataFrame of all results"""
+    def get_results_summary(self):
+        '''Create a summary DataFrame of all results'''
         all_results = []
         
         for filename in os.listdir(self.results_dir):
@@ -415,7 +395,7 @@ class ResultsManager:
 
 
 class ExperimentManager:
-    """Manages the execution of recommendation system experiments"""
+    '''Manages the execution of recommendation system experiments'''
     
     def __init__(self, data_loader: DataLoader, model_factory: ModelFactory, 
                  evaluator: RecommenderEvaluator, results_manager: ResultsManager):
@@ -424,8 +404,8 @@ class ExperimentManager:
         self.evaluator = evaluator
         self.results_manager = results_manager
 
-    def prepare_data(self, transactions: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, Set[str]]:
-        """Prepare training and validation data using last 8 weeks (7 for training, 1 for testing)"""
+    def prepare_data(self, transactions):
+        '''Prepare training and validation data using last 8 weeks (7 for training, 1 for testing)'''
         transactions["t_dat"] = pd.to_datetime(transactions["t_dat"])
         
         # Get the last date in the dataset
@@ -467,8 +447,8 @@ class ExperimentManager:
                 val_purchases[val_purchases['customer_id'].isin(common_users)],
                 common_users)
 
-    def run_experiment(self, config: Dict) -> None:
-        """Run a single experiment with given configuration"""
+    def run_experiment(self, config):
+        '''Run a single experiment with given configuration'''
         try:
             customers, articles, transactions = self.data_loader.load_data()
             
@@ -508,8 +488,7 @@ class ExperimentManager:
             raise
 
 
-def main():
-    """Main function to run the evaluation pipeline with configurable run mode"""
+def main():   
     parser = argparse.ArgumentParser(description='Run model evaluation')
     parser.add_argument('--config', type=str, required=True, 
                        help='Path to configuration file')
@@ -554,7 +533,7 @@ def main():
             }
             
             def run_sweep():
-                """Execute a single sweep run"""
+                '''Execute a single sweep run'''
                 with wandb.init() as run:
                     # Combine fixed and sweep parameters
                     run_config = {k: v for k, v in config.items() 
